@@ -10,6 +10,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface UdactiyService {
-    @GET()
+    @GET("android-baking-app-json")
     LiveData<ApiResponse<List<Recipe>>> getRecipeList();
 }

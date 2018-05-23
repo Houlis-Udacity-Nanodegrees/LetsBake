@@ -23,6 +23,10 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.recipes_fragment_container, new RecipesFragment())
+                .commit();
     }
 
     @Override

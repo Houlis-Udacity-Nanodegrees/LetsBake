@@ -6,6 +6,7 @@ import android.arch.persistence.room.Room;
 import com.xaris.xoulis.letsbake.data.api.UdactiyService;
 import com.xaris.xoulis.letsbake.data.db.RecipeDao;
 import com.xaris.xoulis.letsbake.data.db.RecipesDatabase;
+import com.xaris.xoulis.letsbake.utils.LiveDataCallAdapterFactory;
 
 import javax.inject.Singleton;
 
@@ -20,8 +21,9 @@ class AppModule {
     @Provides
     UdactiyService provideUdacityService() {
         return new Retrofit.Builder()
-                .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json")
+                .baseUrl("http://go.udacity.com/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .build()
                 .create(UdactiyService.class);
     }

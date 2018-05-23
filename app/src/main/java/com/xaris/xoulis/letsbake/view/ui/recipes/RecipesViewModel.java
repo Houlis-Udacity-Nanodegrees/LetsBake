@@ -14,9 +14,16 @@ public class RecipesViewModel extends ViewModel {
 
     private final RecipesRepository mRepository;
 
+    private final LiveData<List<Recipe>> recipeList;
+
     @Inject
     public RecipesViewModel(RecipesRepository recipesRepository) {
         mRepository = recipesRepository;
+        recipeList = mRepository.getRecipeList();
+    }
+
+    public LiveData<List<Recipe>> getRecipes() {
+        return recipeList;
     }
 
 }

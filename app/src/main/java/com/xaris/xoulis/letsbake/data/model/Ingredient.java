@@ -17,7 +17,7 @@ public class Ingredient {
     @ColumnInfo(name = "recipe_id")
     private transient int recipeId;
 
-    private int quantity;
+    private double quantity;
     private String measure;
     private String ingredient;
 
@@ -43,11 +43,11 @@ public class Ingredient {
         this.recipeId = recipeId;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 
