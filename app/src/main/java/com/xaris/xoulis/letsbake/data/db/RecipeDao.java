@@ -3,6 +3,7 @@ package com.xaris.xoulis.letsbake.data.db;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.xaris.xoulis.letsbake.data.model.Ingredient;
@@ -14,13 +15,16 @@ import java.util.List;
 @Dao
 public abstract class RecipeDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insertRecipes(List<Recipe> recipes);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertRecipe(Recipe recipe);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertSteps(List<Step> steps);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertIngredients(List<Ingredient> ingredients);
 
     @Query("SELECT * FROM Recipe")

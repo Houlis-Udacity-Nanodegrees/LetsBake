@@ -7,13 +7,13 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(indices = {@Index("id"), @Index("recipe_id")},
+@Entity(indices = {@Index("recipe_id")},
         foreignKeys = @ForeignKey(entity = Recipe.class,
                 parentColumns = "id",
                 childColumns = "recipe_id"))
 public class Ingredient {
+
     @PrimaryKey
-    private transient int id;
     @ColumnInfo(name = "recipe_id")
     private transient int recipeId;
 
@@ -21,8 +21,7 @@ public class Ingredient {
     private String measure;
     private String ingredient;
 
-    public Ingredient(int id, int recipeId, int quantity, String measure, String ingredient) {
-        this.id = id;
+    public Ingredient(int recipeId, int quantity, String measure, String ingredient) {
         this.recipeId = recipeId;
         this.quantity = quantity;
         this.measure = measure;
@@ -34,14 +33,6 @@ public class Ingredient {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getRecipeId() {

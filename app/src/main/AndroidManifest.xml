@@ -5,21 +5,22 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".LetsBakeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.ui.activity.RecipesActivity">
+        <activity android:name=".view.ui.recipes.RecipesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.activity.DetailActivity" />
-        <activity android:name=".view.ui.activity.StepsActivity"></activity>
+        <activity android:name=".view.ui.detail.DetailActivity" />
+        <activity android:name=".view.ui.steps.StepsActivity" />
     </application>
 
 </manifest>
