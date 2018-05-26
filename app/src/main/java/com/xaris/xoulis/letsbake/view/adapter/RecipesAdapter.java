@@ -1,4 +1,80 @@
 package com.xaris.xoulis.letsbake.view.adapter;
 
-public class RecipesAdapter {
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
+import android.support.v4.util.ObjectsCompat;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import com.xaris.xoulis.letsbake.data.model.Recipe;
+import com.xaris.xoulis.letsbake.databinding.RecipeItemBinding;
+
+import java.util.List;
+import java.util.Objects;
+
+public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesAdapterViewHolder> {
+
+    private List<Recipe> recipes;
+
+    private RecipeClickCallback callback;
+
+    public RecipesAdapter(RecipeClickCallback callback) {
+        this.callback = callback;
+    }
+
+    public void setRecipes(List<Recipe> newRecipeList) {
+            this.recipes = newRecipeList;
+            notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public RecipesAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        RecipeItemBinding recipeItemBinding = RecipeItemBinding.inflate(inflater, parent, false);
+        return new RecipesAdapterViewHolder(recipeItemBinding);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecipesAdapterViewHolder holder, int position) {
+        holder.bind(recipes.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        if (recipes != null)
+            return recipes.size();
+        return 0;
+    }
+
+    class RecipesAdapterViewHolder extends RecyclerView.ViewHolder {
+        private final RecipeItemBinding recipeItemBinding;
+
+        public RecipesAdapterViewHolder(RecipeItemBinding recipeItemBinding) {
+            super(recipeItemBinding.getRoot());
+            this.recipeItemBinding = recipeItemBinding;
+
+            recipeItemBinding.getRoot().setOnClickListener(v -> {
+                Recipe recipe = recipeItemBinding.getRecipe();
+                if (recipe != null && callback != null) {
+                    callback.onRecipeClick(recipe);
+                }
+            });
+        }
+
+        public void bind(Recipe recipe) {
+            recipeItemBinding.setRecipe(recipe);
+            recipeItemBinding.executePendingBindings();
+        }
+    }
+
+    private boolean areObjectsTheSame(List<Recipe> oldData, List<Recipe> newData) {
+        return oldData.size() >= newData.size() && ObjectsCompat.equals(oldData, newData);
+    }
+
+    public interface RecipeClickCallback {
+        void onRecipeClick(Recipe recipe);
+    }
 }

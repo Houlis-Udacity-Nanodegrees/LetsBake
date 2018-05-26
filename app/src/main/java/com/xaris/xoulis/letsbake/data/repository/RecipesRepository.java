@@ -65,18 +65,7 @@ public class RecipesRepository {
             }
         }.asLiveData();
     }
-
-    private void addRecipeListToDb(List<Recipe> recipeList) {
-        try {
-            recipesDatabase.beginTransaction();
-            recipesDatabase.recipeDao().insertRecipes(recipeList);
-            recipesDatabase.setTransactionSuccessful();
-        } finally {
-            recipesDatabase.endTransaction();
-        }
-    }
-
-
+    
     public LiveData<Recipe> getRecipe(int recipeId) {
         return recipeDao.getRecipeById(recipeId);
     }
