@@ -66,4 +66,13 @@ public class Ingredient {
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
     }
+
+    public String getFullIngredientDescription(Ingredient ingredient) {
+        String fullDescription = ingredient.getMeasure() + " " + ingredient.getMeasure().toLowerCase();
+        if (ingredient.getQuantity() > 1) {
+            fullDescription += "s";
+        }
+        fullDescription += " " + ingredient.getIngredient();
+        return fullDescription;
+    }
 }

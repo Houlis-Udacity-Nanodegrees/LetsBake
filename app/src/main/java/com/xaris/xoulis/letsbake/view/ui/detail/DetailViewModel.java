@@ -9,6 +9,8 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
+import com.xaris.xoulis.letsbake.data.model.Ingredient;
+import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.data.model.Step;
 import com.xaris.xoulis.letsbake.data.repository.RecipesRepository;
 
@@ -18,85 +20,35 @@ import javax.inject.Inject;
 
 public class DetailViewModel extends ViewModel {
 
+
     private final RecipesRepository mRepository;
 
-    private final MutableLiveData<Integer> mRecipeId;
-    private final MutableLiveData<Integer> mStepId;
-    private final LiveData<List<Step>> mSteps;
-    private final MediatorLiveData<Step> mCurrentStep = new MediatorLiveData<>();
+    private final MutableLiveData<Integer> recipeId = new MutableLiveData<>();
+    private final LiveData<Recipe> recipe;
 
     @Inject
     public DetailViewModel(RecipesRepository recipesRepository) {
         this.mRepository = recipesRepository;
-        this.mRecipeId = new MutableLiveData<>();
-        this.mStepId = new MutableLiveData<>();
-
-        mSteps = Transformations.switchMap(mRecipeId, input -> {
-            if (input != null) {
-                return mRepository.getSteps(input);
-            }
-            return null;
-        });
-
-        mCurrentStep.addSource(mSteps, input -> {
-            if (input != null && !input.isEmpty() && mStepId.getValue() != null) {
-                mCurrentStep.setValue(input.get(mStepId.getValue()));
-            } else {
-                mCurrentStep.setValue(null);
-            }
-        });
-
-        mCurrentStep.addSource(mStepId, input -> {
-            if (input != null && mSteps.getValue() != null && !mSteps.getValue().isEmpty()) {
-                mCurrentStep.setValue(mSteps.getValue().get(input));
-            } else {
-                mCurrentStep.setValue(null);
-            }
-        });
-    }
-
-    public Boolean hasNextStep() {
-        return mSteps.getValue() != null && mStepId.getValue() != null
-                && mSteps.getValue().size() - 1 > mStepId.getValue();
-    }
-
-    public Boolean hasPreviousStep() {
-        return mStepId.getValue() != null && 0 < mStepId.getValue();
-    }
-
-    public void getNextStep() {
-        if (mStepId.getValue() == null)
-            return;
-        mStepId.setValue(mStepId.getValue() + 1);
-    }
-
-    public void getPreviousStep() {
-        if (mStepId.getValue() == null)
-            return;
-        mStepId.setValue(mStepId.getValue() - 1);
-    }
-
-    public LiveData<Step> getCurrentStep() {
-        return mCurrentStep;
-    }
-
-    public void setRecipeId(int recipeId) {
-        if (mRecipeId.getValue() == null || mRecipeId.getValue() != recipeId) {
-            mRecipeId.setValue(recipeId);
-        }
-    }
-
-    public void setStepId(int stepId) {
-        if (mStepId.getValue() == null || mStepId.getValue() != stepId) {
-            mStepId.setValue(stepId);
-        }
+        this.recipe = Transformations.switchMap(recipeId, mRepository::getRecipe);
     }
 
     public int getRecipeId() {
-        return mRecipeId.getValue() == null ? -1 : mRecipeId.getValue();
+        return recipeId.getValue() != null ? recipeId.getValue() : -1;
     }
 
-    public int getStepId() {
-        return mStepId.getValue() == null ? -1 : mStepId.getValue();
+    public void setRecipeId(int id) {
+        this.recipeId.setValue(id);
+    }
+
+    public LiveData<Recipe> getRecipe() {
+        return recipe;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return recipe.getValue().getIngredients();
+    }
+
+    public List<Step> getSteps() {
+        return recipe.getValue().getSteps();
     }
 }

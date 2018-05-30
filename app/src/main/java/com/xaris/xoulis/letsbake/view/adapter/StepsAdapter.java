@@ -1,4 +1,72 @@
 package com.xaris.xoulis.letsbake.view.adapter;
 
-public class StepsAdapter {
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.xaris.xoulis.letsbake.data.model.Step;
+import com.xaris.xoulis.letsbake.databinding.RecipeItemBinding;
+import com.xaris.xoulis.letsbake.databinding.StepItemBinding;
+
+import java.util.List;
+
+public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapterViewHolder> {
+    private List<Step> steps;
+
+    private StepClickListener listener;
+
+    public StepsAdapter(StepClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public StepsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        StepItemBinding stepItemBinding = StepItemBinding.inflate(inflater, parent, false);
+        return new StepsAdapterViewHolder(stepItemBinding);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull StepsAdapterViewHolder holder, int position) {
+        holder.bind(steps.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        if (steps != null)
+            return steps.size();
+        return 0;
+    }
+
+    class StepsAdapterViewHolder extends RecyclerView.ViewHolder {
+        private final StepItemBinding stepItemBinding;
+
+        StepsAdapterViewHolder(StepItemBinding stepItemBinding) {
+            super(stepItemBinding.getRoot());
+            this.stepItemBinding = stepItemBinding;
+
+            stepItemBinding.getRoot().setOnClickListener(v -> {
+                Step step = steps.get(getAdapterPosition());
+                if (step != null && listener != null) {
+                    listener.onStepClick(step);
+                }
+            });
+        }
+
+        void bind(Step step) {
+            stepItemBinding.setStep(step);
+        }
+    }
+
+    public interface StepClickListener {
+        void onStepClick(Step step);
+    }
 }

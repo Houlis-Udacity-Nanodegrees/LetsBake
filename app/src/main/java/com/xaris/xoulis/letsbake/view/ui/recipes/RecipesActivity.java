@@ -41,9 +41,14 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
     }
 
     private void showRecipeDetails(Recipe recipe) {
+        Bundle arguments = new Bundle();
+        arguments.putInt("recipeId",recipe.getId());
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(arguments);
+
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, R.animator.slide_in_left, R.animator.slide_out_right)
-                .replace(R.id.recipes_fragment_container, new DetailFragment())
+                .replace(R.id.recipes_fragment_container, detailFragment)
                 .addToBackStack(null)
                 .commit();
     }

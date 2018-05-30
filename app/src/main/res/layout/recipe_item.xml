@@ -30,7 +30,8 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{recipe.image}" />
+                app:imageUrl="@{recipe.image}"
+                app:placeholder="@{recipe.imageSrcId}" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -25,8 +25,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
     }
 
     public void setRecipes(List<Recipe> newRecipeList) {
-            this.recipes = newRecipeList;
-            notifyDataSetChanged();
+        this.recipes = newRecipeList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -52,7 +52,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
     class RecipesAdapterViewHolder extends RecyclerView.ViewHolder {
         private final RecipeItemBinding recipeItemBinding;
 
-        public RecipesAdapterViewHolder(RecipeItemBinding recipeItemBinding) {
+        RecipesAdapterViewHolder(RecipeItemBinding recipeItemBinding) {
             super(recipeItemBinding.getRoot());
             this.recipeItemBinding = recipeItemBinding;
 
@@ -64,14 +64,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
             });
         }
 
-        public void bind(Recipe recipe) {
+        void bind(Recipe recipe) {
             recipeItemBinding.setRecipe(recipe);
             recipeItemBinding.executePendingBindings();
         }
-    }
-
-    private boolean areObjectsTheSame(List<Recipe> oldData, List<Recipe> newData) {
-        return oldData.size() >= newData.size() && ObjectsCompat.equals(oldData, newData);
     }
 
     public interface RecipeClickCallback {

@@ -33,33 +33,12 @@ public class RecipesViewModel extends ViewModel {
         return recipeList;
     }
 
-    @BindingAdapter("imageUrl")
-    public static void loadRecipeImage(ImageView view, String imageUrl) {
+    @BindingAdapter({"imageUrl", "placeholder"})
+    public static void loadRecipeImage(ImageView view, String imageUrl, int imageSrcId) {
         if (TextUtils.isEmpty(imageUrl)) {
-            view.setImageResource(chooseRandomPlaceholder());
+            view.setImageResource(imageSrcId);
         } else {
             Picasso.get().load(imageUrl).into(view);
         }
     }
-
-    private static int chooseRandomPlaceholder() {
-        int randomNumber = new Random().nextInt(4) + 1;
-        int imageResourceId;
-        switch (randomNumber) {
-            case 1:
-                imageResourceId = R.drawable.recipe_default_1;
-                break;
-            case 2:
-                imageResourceId = R.drawable.recipe_default_2;
-                break;
-            case 3:
-                imageResourceId = R.drawable.recipe_default_3;
-                break;
-            default:
-                imageResourceId = R.drawable.recipe_default_4;
-                break;
-        }
-        return imageResourceId;
-    }
-
 }

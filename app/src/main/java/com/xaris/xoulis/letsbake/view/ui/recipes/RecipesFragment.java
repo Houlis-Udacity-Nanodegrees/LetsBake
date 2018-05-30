@@ -58,7 +58,7 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
             listener = (OnRecipeClickedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString()
-                    + " must implement OnHeadlineSelectedListener");
+                    + " must implement OnRecipeClickedListener");
         }
     }
 
@@ -103,6 +103,7 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
         recipesViewModel = ViewModelProviders.of(this, mViewModelFactory).get(RecipesViewModel.class);
         recipesViewModel.getRecipes().observe(this, recipes -> {
             if (recipes != null && !recipes.isEmpty()) {
+                binding.setShowError(false);
                 recipesAdapter.setRecipes(recipes);
                 binding.recipesRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPosition);
             } else {
