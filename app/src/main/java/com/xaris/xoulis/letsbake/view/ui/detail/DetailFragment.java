@@ -1,5 +1,6 @@
 package com.xaris.xoulis.letsbake.view.ui.detail;
 
+import android.animation.LayoutTransition;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +22,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 
 import com.xaris.xoulis.letsbake.R;
 import com.xaris.xoulis.letsbake.data.model.Step;
@@ -40,6 +45,8 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
 
     private FragmentDetailBinding binding;
 
+    private RecyclerView ingredientsRecyclerView;
+
     private IngredientsAdapter ingredientsAdapter;
     private StepsAdapter stepsAdapter;
 
@@ -51,6 +58,8 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (binding == null)
             binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
+        binding.setLifecycleOwner(this);
+        binding.setHandler(this);
         return binding.getRoot();
     }
 
@@ -62,7 +71,7 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
         // TODO decide what to do if arguments == null
         int recipeId = 0;
         if (arguments != null)
-             recipeId = arguments.getInt("recipeId");
+            recipeId = arguments.getInt("recipeId");
 
         initToolbar();
         initIngredientsRecyclerView();
@@ -89,11 +98,15 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
     }
 
     private void initIngredientsRecyclerView() {
-        RecyclerView ingredientsRecyclerView = binding.ingredientsRecyclerView;
+        ingredientsRecyclerView = binding.ingredientsRecyclerView;
         ingredientsAdapter = new IngredientsAdapter();
         ingredientsRecyclerView.setAdapter(ingredientsAdapter);
         ingredientsRecyclerView.setHasFixedSize(true);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+        // Enable animation for recyclerView's parent's layout changes
+        LayoutTransition transition = binding.contentCl.getLayoutTransition();
+        transition.enableTransitionType(LayoutTransition.CHANGING);
     }
 
     private void initStepsAdapter() {
@@ -102,6 +115,9 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
         stepsRecyclerView.setAdapter(stepsAdapter);
         stepsRecyclerView.setHasFixedSize(true);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(stepsRecyclerView.getContext(),
+                LinearLayoutManager.VERTICAL);
+        stepsRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     private void observeViewModel(int recipeId) {
@@ -109,12 +125,26 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
         detailViewModel.setRecipeId(recipeId);
         detailViewModel.getRecipe().observe(this, recipe -> {
             if (recipe != null) {
-                binding.setRecipeImageId(recipe.getImageSrcId());
-                binding.toolbar.setTitle(recipe.getName());
+                binding.setViewModel(detailViewModel);
+                binding.collapsingToolbar.setTitle(recipe.getName());
                 ingredientsAdapter.setIngredientList(recipe.getIngredients());
                 stepsAdapter.setSteps(recipe.getSteps());
             }
         });
+    }
+
+    public void showOrHideIngredients(View view) {
+        if (detailViewModel.getShowIngredients().getValue() == null)
+            return;
+        boolean shouldShow = detailViewModel.getShowIngredients().getValue();
+        float deg;
+        if (shouldShow) {
+            deg = 0f;
+        } else {
+            deg = 180f;
+        }
+        binding.showOrHideIngredientsImageView.animate().rotation(deg).setInterpolator(new AccelerateDecelerateInterpolator());
+        detailViewModel.setShowIngredients(!shouldShow);
     }
 
     @Override

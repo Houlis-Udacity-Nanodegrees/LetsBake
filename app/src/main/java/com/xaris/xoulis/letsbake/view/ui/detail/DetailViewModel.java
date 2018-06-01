@@ -24,12 +24,15 @@ public class DetailViewModel extends ViewModel {
     private final RecipesRepository mRepository;
 
     private final MutableLiveData<Integer> recipeId = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> showIngredients = new MutableLiveData<>();
     private final LiveData<Recipe> recipe;
+
 
     @Inject
     public DetailViewModel(RecipesRepository recipesRepository) {
         this.mRepository = recipesRepository;
         this.recipe = Transformations.switchMap(recipeId, mRepository::getRecipe);
+        this.showIngredients.postValue(false);
     }
 
     public int getRecipeId() {
@@ -37,7 +40,15 @@ public class DetailViewModel extends ViewModel {
     }
 
     public void setRecipeId(int id) {
-        this.recipeId.setValue(id);
+        this.recipeId.postValue(id);
+    }
+
+    public LiveData<Boolean> getShowIngredients() {
+        return showIngredients;
+    }
+
+    public void setShowIngredients(boolean shouldShow) {
+        this.showIngredients.postValue(shouldShow);
     }
 
     public LiveData<Recipe> getRecipe() {

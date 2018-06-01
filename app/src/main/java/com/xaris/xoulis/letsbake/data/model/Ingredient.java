@@ -7,6 +7,8 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Locale;
+
 @Entity(indices = {@Index("recipe_id")},
         foreignKeys = @ForeignKey(entity = Recipe.class,
                 parentColumns = "id",
@@ -68,7 +70,10 @@ public class Ingredient {
     }
 
     public String getFullIngredientDescription(Ingredient ingredient) {
-        String fullDescription = ingredient.getMeasure() + " " + ingredient.getMeasure().toLowerCase();
+        double quantity = ingredient.quantity;
+        String formattedQuantity = quantity - Math.floor(quantity) > 0 ? String.format(Locale.getDefault(), "%.1f", quantity) :
+                String.format(Locale.getDefault(), "%.0f", quantity);
+        String fullDescription = formattedQuantity + " " + ingredient.getMeasure().toLowerCase();
         if (ingredient.getQuantity() > 1) {
             fullDescription += "s";
         }

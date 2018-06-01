@@ -11,15 +11,17 @@
     </data>
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@{ingredient.getFullIngredientDescription(ingredient)}" />
+            android:text="@{ingredient.getFullIngredientDescription(ingredient)}"
+            android:textColor="@color/colorTextDark"
+            android:textSize="14sp" />
 
     </FrameLayout>
 </layout>

@@ -40,9 +40,9 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
         return dispatchingAndroidInjector;
     }
 
-    private void showRecipeDetails(Recipe recipe) {
+    private void showRecipeDetails(int recipeId) {
         Bundle arguments = new Bundle();
-        arguments.putInt("recipeId",recipe.getId());
+        arguments.putInt("recipeId",recipeId);
         DetailFragment detailFragment = new DetailFragment();
         detailFragment.setArguments(arguments);
 
@@ -54,8 +54,8 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
     }
 
     @Override
-    public void onRecipeClick(Recipe recipe) {
-        showRecipeDetails(recipe);
+    public void onRecipeClick(int recipeId) {
+        showRecipeDetails(recipeId);
     }
 
     @Override

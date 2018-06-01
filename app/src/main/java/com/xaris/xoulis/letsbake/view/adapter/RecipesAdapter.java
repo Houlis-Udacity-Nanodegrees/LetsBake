@@ -59,7 +59,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
             recipeItemBinding.getRoot().setOnClickListener(v -> {
                 Recipe recipe = recipeItemBinding.getRecipe();
                 if (recipe != null && callback != null) {
-                    callback.onRecipeClick(recipe);
+                    callback.onRecipeClick(recipe.getId());
                 }
             });
         }
@@ -71,6 +71,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
     }
 
     public interface RecipeClickCallback {
-        void onRecipeClick(Recipe recipe);
+        void onRecipeClick(int recipeId);
     }
 }

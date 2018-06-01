@@ -120,12 +120,12 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
     }
 
     @Override
-    public void onRecipeClick(Recipe recipe) {
+    public void onRecipeClick(int recipeId) {
         if (listener != null)
-            listener.onRecipeClick(recipe);
+            listener.onRecipeClick(recipeId);
     }
 
     public interface OnRecipeClickedListener {
-        void onRecipeClick(Recipe recipe);
+        void onRecipeClick(int recipeId);
     }
 }
