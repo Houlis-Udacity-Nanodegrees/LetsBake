@@ -9,40 +9,15 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Locale;
 
-@Entity(indices = {@Index("recipe_id")},
-        foreignKeys = @ForeignKey(entity = Recipe.class,
-                parentColumns = "id",
-                childColumns = "recipe_id"))
 public class Ingredient {
-
-    @PrimaryKey
-    @ColumnInfo(name = "recipe_id")
-    private transient int recipeId;
-
     private double quantity;
     private String measure;
     private String ingredient;
 
-    public Ingredient(int recipeId, int quantity, String measure, String ingredient) {
-        this.recipeId = recipeId;
-        this.quantity = quantity;
-        this.measure = measure;
-        this.ingredient = ingredient;
-    }
-
-    @Ignore
     public Ingredient(int quantity, String measure, String ingredient) {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
-    }
-
-    public int getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(int recipeId) {
-        this.recipeId = recipeId;
     }
 
     public double getQuantity() {

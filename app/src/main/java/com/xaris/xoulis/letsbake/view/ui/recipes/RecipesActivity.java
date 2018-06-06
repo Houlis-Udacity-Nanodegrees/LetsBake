@@ -19,7 +19,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class RecipesActivity extends AppCompatActivity implements HasSupportFragmentInjector, RecipesFragment.OnRecipeClickedListener {
+public class RecipesActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
@@ -38,24 +38,6 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
-    }
-
-    private void showRecipeDetails(int recipeId) {
-        Bundle arguments = new Bundle();
-        arguments.putInt("recipeId",recipeId);
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.setArguments(arguments);
-
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, R.animator.slide_in_left, R.animator.slide_out_right)
-                .replace(R.id.recipes_fragment_container, detailFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onRecipeClick(int recipeId) {
-        showRecipeDetails(recipeId);
     }
 
     @Override

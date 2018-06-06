@@ -16,85 +16,77 @@ import javax.inject.Inject;
 
 public class StepsViewModel extends ViewModel {
 
-    private final RecipesRepository mRepository;
+    private final MutableLiveData<Recipe> recipe = new MutableLiveData<>();
+    private final MutableLiveData<Integer> stepId = new MutableLiveData<>();
 
-    private final MutableLiveData<Integer> mRecipeId;
-    private final MutableLiveData<Integer> mStepId;
-    private final LiveData<List<Step>> mSteps;
-    private final MediatorLiveData<Step> mCurrentStep = new MediatorLiveData<>();
+    private final MediatorLiveData<Step> step = new MediatorLiveData<>();
+    private final MediatorLiveData<Boolean> hasNextStep = new MediatorLiveData<>();
+    private final MediatorLiveData<Boolean> hasPreviousStep = new MediatorLiveData<>();
+
+    private final MediatorLiveData<List<Step>> steps = new MediatorLiveData<>();
 
     @Inject
-    public StepsViewModel(RecipesRepository recipesRepository) {
-        this.mRepository = recipesRepository;
-        this.mRecipeId = new MutableLiveData<>();
-        this.mStepId = new MutableLiveData<>();
-
-        mSteps = Transformations.switchMap(mRecipeId, input -> {
-            if (input != null) {
-                return mRepository.getSteps(input);
-            }
-            return null;
+    public StepsViewModel() {
+        steps.addSource(recipe, newRecipe -> {
+            if (newRecipe != null)
+                steps.setValue(newRecipe.getSteps());
         });
 
-        mCurrentStep.addSource(mSteps, input -> {
-            if (input != null && !input.isEmpty() && mStepId.getValue() != null) {
-                mCurrentStep.setValue(input.get(mStepId.getValue()));
+        step.addSource(steps, input -> {
+            if (input != null && !input.isEmpty() && stepId.getValue() != null) {
+                step.setValue(input.get(stepId.getValue()));
             } else {
-                mCurrentStep.setValue(null);
+                step.setValue(null);
             }
         });
 
-        mCurrentStep.addSource(mStepId, input -> {
-            if (input != null && mSteps.getValue() != null && !mSteps.getValue().isEmpty()) {
-                mCurrentStep.setValue(mSteps.getValue().get(input));
+        step.addSource(stepId, input -> {
+            if (input != null && steps.getValue() != null && !steps.getValue().isEmpty() &&
+                    input < steps.getValue().size() && input >= 0) {
+                step.setValue(steps.getValue().get(input));
             } else {
-                mCurrentStep.setValue(null);
+                step.setValue(null);
             }
+        });
+
+        hasNextStep.addSource(stepId, newStepId -> {
+            if (newStepId != null && steps.getValue() != null && newStepId < steps.getValue().size() - 1)
+                hasNextStep.setValue(true);
+            else
+                hasNextStep.setValue(false);
+        });
+
+        hasPreviousStep.addSource(stepId, newStepId -> {
+            if (newStepId != null && newStepId > 0)
+                hasPreviousStep.setValue(true);
+            else
+                hasPreviousStep.setValue(false);
         });
     }
 
-    public Boolean hasNextStep() {
-        return mSteps.getValue() != null && mStepId.getValue() != null
-                && mSteps.getValue().size() - 1 > mStepId.getValue();
+    public MutableLiveData<Integer> getStepId() {
+        return stepId;
     }
 
-    public Boolean hasPreviousStep() {
-        return mStepId.getValue() != null && 0 < mStepId.getValue();
+    public MediatorLiveData<Step> getStep() {
+        return step;
     }
 
-    public void getNextStep() {
-        if (mStepId.getValue() == null)
-            return;
-        mStepId.setValue(mStepId.getValue() + 1);
+    public MediatorLiveData<Boolean> getHasNextStep() {
+        return hasNextStep;
     }
 
-    public void getPreviousStep() {
-        if (mStepId.getValue() == null)
-            return;
-        mStepId.setValue(mStepId.getValue() - 1);
+    public MediatorLiveData<Boolean> getHasPreviousStep() {
+        return hasPreviousStep;
     }
 
-    public LiveData<Step> getCurrentStep() {
-        return mCurrentStep;
-    }
-
-    public void setRecipeId(int recipeId) {
-        if (mRecipeId.getValue() == null || mRecipeId.getValue() != recipeId) {
-            mRecipeId.setValue(recipeId);
-        }
+    public void setRecipe(Recipe recipe) {
+        if (this.recipe.getValue() == null || this.recipe.getValue().getId() != recipe.getId())
+            this.recipe.setValue(recipe);
     }
 
     public void setStepId(int stepId) {
-        if (mStepId.getValue() == null || mStepId.getValue() != stepId) {
-            mStepId.setValue(stepId);
-        }
-    }
-
-    public int getRecipeId() {
-        return mRecipeId.getValue() == null ? -1 : mRecipeId.getValue();
-    }
-
-    public int getStepId() {
-        return mStepId.getValue() == null ? -1 : mStepId.getValue();
+        if (this.stepId.getValue() == null || this.stepId.getValue() != stepId)
+            this.stepId.setValue(stepId);
     }
 }

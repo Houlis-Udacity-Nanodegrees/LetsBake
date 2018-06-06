@@ -25,6 +25,7 @@ import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.databinding.FragmentRecipesBinding;
 import com.xaris.xoulis.letsbake.di.Injectable;
 import com.xaris.xoulis.letsbake.view.adapter.RecipesAdapter;
+import com.xaris.xoulis.letsbake.view.ui.detail.DetailFragment;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,23 +44,9 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
     private RecipesAdapter recipesAdapter;
     private Parcelable recyclerViewPosition;
 
-    private OnRecipeClickedListener listener;
-
     private final String RECYCLERVIEW_STATE_KEY = "recyclerview_state_key";
 
     public RecipesFragment() {
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (OnRecipeClickedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString()
-                    + " must implement OnRecipeClickedListener");
-        }
     }
 
     @Nullable
@@ -120,12 +107,20 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
     }
 
     @Override
-    public void onRecipeClick(int recipeId) {
-        if (listener != null)
-            listener.onRecipeClick(recipeId);
+    public void onRecipeClick(Recipe recipe) {
+        showDetailsFragment(recipe);
     }
 
-    public interface OnRecipeClickedListener {
-        void onRecipeClick(int recipeId);
+    private void showDetailsFragment(Recipe recipe) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("recipe", recipe);
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(arguments);
+
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, R.animator.slide_in_left, R.animator.slide_out_right)
+                .replace(R.id.recipes_fragment_container, detailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.detail.DetailActivity" />
-        <activity android:name=".view.ui.steps.StepsActivity" />
     </application>
 
 </manifest>

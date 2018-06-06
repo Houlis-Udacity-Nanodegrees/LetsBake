@@ -74,7 +74,7 @@ public class RecipesRepository {
     }
 
     public LiveData<List<Step>> getSteps(int recipeId) {
-        return recipeDao.getSteps(recipeId);
+        return null;
     }
 
     private List<Recipe> handleEmptyImageUrl(List<Recipe> recipes) {

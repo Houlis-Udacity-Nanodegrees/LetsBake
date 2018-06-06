@@ -20,27 +20,16 @@ import javax.inject.Inject;
 
 public class DetailViewModel extends ViewModel {
 
-
-    private final RecipesRepository mRepository;
-
-    private final MutableLiveData<Integer> recipeId = new MutableLiveData<>();
     private final MutableLiveData<Boolean> showIngredients = new MutableLiveData<>();
-    private final LiveData<Recipe> recipe;
-
+    private final MutableLiveData<Recipe> recipe  = new MutableLiveData<>();
 
     @Inject
-    public DetailViewModel(RecipesRepository recipesRepository) {
-        this.mRepository = recipesRepository;
-        this.recipe = Transformations.switchMap(recipeId, mRepository::getRecipe);
+    public DetailViewModel() {
         this.showIngredients.postValue(false);
     }
 
-    public int getRecipeId() {
-        return recipeId.getValue() != null ? recipeId.getValue() : -1;
-    }
-
-    public void setRecipeId(int id) {
-        this.recipeId.postValue(id);
+    public void setRecipe(Recipe recipe) {
+        this.recipe.setValue(recipe);
     }
 
     public LiveData<Boolean> getShowIngredients() {

@@ -1,19 +1,6 @@
 package com.xaris.xoulis.letsbake.data.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-
-@Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
-        parentColumns = "id",
-        childColumns = "recipe_id"),
-        primaryKeys = {"recipe_id", "id"})
 public class Step {
-
-    @ColumnInfo(name = "recipe_id")
-    private transient int recipeId;
 
     private int id;
     private String shortDescription;
@@ -21,30 +8,12 @@ public class Step {
     private String videoURL;
     private String thumbnailURL;
 
-    public Step(int recipeId, int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
-        this.recipeId = recipeId;
-        this.id = id;
-        this.shortDescription = shortDescription;
-        this.description = description;
-        this.videoURL = videoURL;
-        this.thumbnailURL = thumbnailURL;
-    }
-
-    @Ignore
     public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
         this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
-    }
-
-    public int getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(int recipeId) {
-        this.recipeId = recipeId;
     }
 
     public int getId() {

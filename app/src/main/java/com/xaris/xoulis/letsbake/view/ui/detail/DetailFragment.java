@@ -3,7 +3,6 @@ package com.xaris.xoulis.letsbake.view.ui.detail;
 import android.animation.LayoutTransition;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,28 +10,23 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.LinearLayout;
 
 import com.xaris.xoulis.letsbake.R;
+import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.data.model.Step;
 import com.xaris.xoulis.letsbake.databinding.FragmentDetailBinding;
 import com.xaris.xoulis.letsbake.di.Injectable;
 import com.xaris.xoulis.letsbake.view.adapter.IngredientsAdapter;
 import com.xaris.xoulis.letsbake.view.adapter.StepsAdapter;
-import com.xaris.xoulis.letsbake.view.ui.recipes.RecipesActivity;
+import com.xaris.xoulis.letsbake.view.ui.steps.StepsFragment;
 
 import javax.inject.Inject;
 
@@ -69,14 +63,14 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
 
         Bundle arguments = getArguments();
         // TODO decide what to do if arguments == null
-        int recipeId = 0;
+        Recipe recipe = null;
         if (arguments != null)
-            recipeId = arguments.getInt("recipeId");
+            recipe = arguments.getParcelable("recipe");
 
         initToolbar();
         initIngredientsRecyclerView();
         initStepsAdapter();
-        observeViewModel(recipeId);
+        observeViewModel(recipe);
     }
 
     @Override
@@ -120,15 +114,15 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
         stepsRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void observeViewModel(int recipeId) {
+    private void observeViewModel(Recipe recipe) {
         detailViewModel = ViewModelProviders.of(this, mViewModelFactory).get(DetailViewModel.class);
-        detailViewModel.setRecipeId(recipeId);
-        detailViewModel.getRecipe().observe(this, recipe -> {
+        detailViewModel.setRecipe(recipe);
+        detailViewModel.getRecipe().observe(this, newRecipe -> {
             if (recipe != null) {
                 binding.setViewModel(detailViewModel);
-                binding.collapsingToolbar.setTitle(recipe.getName());
-                ingredientsAdapter.setIngredientList(recipe.getIngredients());
-                stepsAdapter.setSteps(recipe.getSteps());
+                binding.collapsingToolbar.setTitle(newRecipe.getName());
+                ingredientsAdapter.setIngredientList(newRecipe.getIngredients());
+                stepsAdapter.setSteps(newRecipe.getSteps());
             }
         });
     }
@@ -149,6 +143,15 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
 
     @Override
     public void onStepClick(Step step) {
-
+        StepsFragment fragment = new StepsFragment();
+        Bundle args = new Bundle();
+        args.putInt("stepId", step.getId());
+        args.putParcelable("recipe", detailViewModel.getRecipe().getValue());
+        fragment.setArguments(args);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_up, 0, 0, R.animator.slide_out_down)
+                .add(R.id.recipes_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

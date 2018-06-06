@@ -21,18 +21,10 @@ public abstract class RecipeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertRecipe(Recipe recipe);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertSteps(List<Step> steps);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertIngredients(List<Ingredient> ingredients);
-
     @Query("SELECT * FROM Recipe")
     public abstract LiveData<List<Recipe>> getRecipes();
 
     @Query("SELECT * FROM Recipe WHERE id = :recipeId")
     public abstract LiveData<Recipe> getRecipeById(int recipeId);
 
-    @Query("SELECT * FROM Step WHERE recipe_id = :recipeId")
-    public abstract LiveData<List<Step>> getSteps(int recipeId);
 }
