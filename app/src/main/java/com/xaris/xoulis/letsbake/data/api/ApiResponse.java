@@ -31,6 +31,7 @@ import retrofit2.Response;
 
 /**
  * Common class used by API responses.
+ *
  * @param <T>
  */
 public class ApiResponse<T> {
@@ -55,7 +56,7 @@ public class ApiResponse<T> {
 
     public ApiResponse(Response<T> response) {
         code = response.code();
-        if(response.isSuccessful()) {
+        if (response.isSuccessful()) {
             body = response.body();
             errorMessage = null;
         } else {

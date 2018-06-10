@@ -2,6 +2,7 @@ package com.xaris.xoulis.letsbake.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,14 @@ import java.util.List;
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapterViewHolder> {
     private List<Step> steps;
 
+    private int selectedPosition;
+    private boolean isTablet;
+
     private StepClickListener listener;
 
-    public StepsAdapter(StepClickListener listener) {
+    public StepsAdapter(StepClickListener listener, boolean isTablet) {
         this.listener = listener;
+        this.isTablet = isTablet;
     }
 
     public void setSteps(List<Step> steps) {
@@ -36,6 +41,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
 
     @Override
     public void onBindViewHolder(@NonNull StepsAdapterViewHolder holder, int position) {
+        if (isTablet)
+            holder.itemView.setSelected(selectedPosition == position);
         holder.bind(steps.get(position));
     }
 
@@ -56,6 +63,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
             stepItemBinding.getRoot().setOnClickListener(v -> {
                 Step step = steps.get(getAdapterPosition());
                 if (step != null && listener != null) {
+                    highlightSelection();
                     listener.onStepClick(step);
                 }
             });
@@ -63,6 +71,14 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
 
         void bind(Step step) {
             stepItemBinding.setStep(step);
+        }
+
+        private void highlightSelection() {
+            if (isTablet) {
+                notifyItemChanged(selectedPosition);
+                selectedPosition = getAdapterPosition();
+                notifyItemChanged(selectedPosition);
+            }
         }
     }
 

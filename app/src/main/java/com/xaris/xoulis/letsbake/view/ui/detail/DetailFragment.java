@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -86,9 +88,13 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        setHasOptionsMenu(true);
+        if (getResources().getBoolean(R.bool.is_tablet)) {
+            actionBar.hide();
+        } else {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            setHasOptionsMenu(true);
+        }
     }
 
     private void initIngredientsRecyclerView() {
@@ -105,7 +111,7 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
 
     private void initStepsAdapter() {
         RecyclerView stepsRecyclerView = binding.recipeStepsRecyclerView;
-        stepsAdapter = new StepsAdapter(this);
+        stepsAdapter = new StepsAdapter(this, getResources().getBoolean(R.bool.is_tablet));
         stepsRecyclerView.setAdapter(stepsAdapter);
         stepsRecyclerView.setHasFixedSize(true);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -143,14 +149,22 @@ public class DetailFragment extends Fragment implements Injectable, StepsAdapter
 
     @Override
     public void onStepClick(Step step) {
+        int containerViewId;
         StepsFragment fragment = new StepsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         Bundle args = new Bundle();
         args.putInt("stepId", step.getId());
         args.putParcelable("recipe", detailViewModel.getRecipe().getValue());
         fragment.setArguments(args);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_up, 0, 0, R.animator.slide_out_down)
-                .add(R.id.recipes_fragment_container, fragment)
+
+        if (getResources().getBoolean(R.bool.is_tablet)) {
+            containerViewId = R.id.recipe_step_container;
+        } else {
+            containerViewId = R.id.container;
+            transaction.setCustomAnimations(R.animator.slide_in_up, 0, 0, R.animator.slide_out_down);
+        }
+
+        transaction.add(containerViewId, fragment)
                 .addToBackStack(null)
                 .commit();
     }

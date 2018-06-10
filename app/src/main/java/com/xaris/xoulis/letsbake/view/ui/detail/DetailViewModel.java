@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class DetailViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> showIngredients = new MutableLiveData<>();
-    private final MutableLiveData<Recipe> recipe  = new MutableLiveData<>();
+    private final MutableLiveData<Recipe> recipe = new MutableLiveData<>();
 
     @Inject
     public DetailViewModel() {

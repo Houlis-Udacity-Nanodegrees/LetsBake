@@ -1,21 +1,18 @@
 package com.xaris.xoulis.letsbake.view.ui.recipes;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ObjectsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +23,7 @@ import com.xaris.xoulis.letsbake.databinding.FragmentRecipesBinding;
 import com.xaris.xoulis.letsbake.di.Injectable;
 import com.xaris.xoulis.letsbake.view.adapter.RecipesAdapter;
 import com.xaris.xoulis.letsbake.view.ui.detail.DetailFragment;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import com.xaris.xoulis.letsbake.view.ui.steps.StepsFragment;
 
 import javax.inject.Inject;
 
@@ -112,15 +106,28 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
     }
 
     private void showDetailsFragment(Recipe recipe) {
+        FragmentManager fragmentManager = getFragmentManager();
         Bundle arguments = new Bundle();
         arguments.putParcelable("recipe", recipe);
+
+        // Default fragment
         DetailFragment detailFragment = new DetailFragment();
         detailFragment.setArguments(arguments);
-
-        getFragmentManager().beginTransaction()
+        fragmentManager.beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, R.animator.slide_in_left, R.animator.slide_out_right)
-                .replace(R.id.recipes_fragment_container, detailFragment)
+                .replace(R.id.container, detailFragment)
                 .addToBackStack(null)
                 .commit();
+
+        // Steps fragment
+        if (getResources().getBoolean(R.bool.is_tablet)) {
+            StepsFragment stepsFragment = new StepsFragment();
+            stepsFragment.setArguments(arguments);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.recipe_step_container, stepsFragment)
+                    .addToBackStack(null)
+                    .commit();
+            getActivity().findViewById(R.id.recipe_step_container).setVisibility(View.VISIBLE);
+        }
     }
 }

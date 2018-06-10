@@ -5,10 +5,13 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import android.text.TextUtils;
 
 import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.data.model.Step;
 import com.xaris.xoulis.letsbake.data.repository.RecipesRepository;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class StepsViewModel extends ViewModel {
     private final MediatorLiveData<Step> step = new MediatorLiveData<>();
     private final MediatorLiveData<Boolean> hasNextStep = new MediatorLiveData<>();
     private final MediatorLiveData<Boolean> hasPreviousStep = new MediatorLiveData<>();
-
+    private final MediatorLiveData<Boolean> hasUrl = new MediatorLiveData<>();
     private final MediatorLiveData<List<Step>> steps = new MediatorLiveData<>();
 
     @Inject
@@ -62,6 +65,31 @@ public class StepsViewModel extends ViewModel {
             else
                 hasPreviousStep.setValue(false);
         });
+
+        hasUrl.addSource(step, newStep -> {
+            if (newStep != null) {
+                if (!TextUtils.isEmpty(newStep.getVideoURL()))
+                    hasUrl.setValue(true);
+                else
+                    hasUrl.setValue(false);
+            }
+        });
+    }
+
+    public String getVideoUrl() {
+        Step step = this.step.getValue();
+        String url = "";
+        if (step != null) {
+            if (!TextUtils.isEmpty(step.getVideoURL()))
+                url = step.getVideoURL();
+            else if (!TextUtils.isEmpty(step.getThumbnailURL()))
+                url = step.getThumbnailURL();
+        }
+        return url;
+    }
+
+    public MutableLiveData<Recipe> getRecipe() {
+        return recipe;
     }
 
     public MutableLiveData<Integer> getStepId() {
@@ -80,6 +108,10 @@ public class StepsViewModel extends ViewModel {
         return hasPreviousStep;
     }
 
+    public MediatorLiveData<Boolean> getHasUrl() {
+        return hasUrl;
+    }
+
     public void setRecipe(Recipe recipe) {
         if (this.recipe.getValue() == null || this.recipe.getValue().getId() != recipe.getId())
             this.recipe.setValue(recipe);
@@ -88,5 +120,6 @@ public class StepsViewModel extends ViewModel {
     public void setStepId(int stepId) {
         if (this.stepId.getValue() == null || this.stepId.getValue() != stepId)
             this.stepId.setValue(stepId);
+
     }
 }
