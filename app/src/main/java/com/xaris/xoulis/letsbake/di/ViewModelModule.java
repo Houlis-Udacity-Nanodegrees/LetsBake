@@ -7,6 +7,7 @@ import com.xaris.xoulis.letsbake.view.ui.detail.DetailViewModel;
 import com.xaris.xoulis.letsbake.view.ui.recipes.RecipesViewModel;
 import com.xaris.xoulis.letsbake.view.ui.steps.StepsViewModel;
 import com.xaris.xoulis.letsbake.viewmodel.ViewModelFactory;
+import com.xaris.xoulis.letsbake.widget.WidgetViewModel;
 
 import dagger.Binds;
 import dagger.Module;
@@ -14,6 +15,12 @@ import dagger.multibindings.IntoMap;
 
 @Module
 abstract class ViewModelModule {
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(WidgetViewModel.class)
+    abstract ViewModel bindWidgetViewModel(WidgetViewModel widgetViewModel);
+
     @Binds
     @IntoMap
     @ViewModelKey(RecipesViewModel.class)

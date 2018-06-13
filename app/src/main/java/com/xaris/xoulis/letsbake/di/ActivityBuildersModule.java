@@ -1,6 +1,7 @@
 package com.xaris.xoulis.letsbake.di;
 
 import com.xaris.xoulis.letsbake.view.ui.recipes.RecipesActivity;
+import com.xaris.xoulis.letsbake.widget.IngredientsWidgetActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -9,4 +10,7 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class ActivityBuildersModule {
     @ContributesAndroidInjector
     abstract RecipesActivity contributeRecipesActivity();
+
+    @ContributesAndroidInjector
+    abstract IngredientsWidgetActivity contributeIngredientsWidgetActivity();
 }

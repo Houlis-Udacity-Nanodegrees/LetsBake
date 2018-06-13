@@ -9,18 +9,43 @@
         android:name=".LetsBakeApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".view.ui.recipes.RecipesActivity">
+
+        <activity android:name=".view.ui.recipes.RecipesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".widget.IngredientsWidgetActivity"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".widget.RecipeWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_provider_info"/>
+        </receiver>
+
+        <!-- Services  -->
+        <service
+            android:name=".widget.IngredientRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".widget.RecipeWidgetService" />
+
     </application>
 
 </manifest>
