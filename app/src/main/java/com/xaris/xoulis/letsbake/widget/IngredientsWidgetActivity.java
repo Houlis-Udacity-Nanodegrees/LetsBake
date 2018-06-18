@@ -11,12 +11,16 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 
 import com.xaris.xoulis.letsbake.R;
+import com.xaris.xoulis.letsbake.data.model.Ingredient;
 import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.databinding.ActivityWidgetBinding;
 import com.xaris.xoulis.letsbake.di.Injectable;
@@ -37,8 +41,10 @@ public class IngredientsWidgetActivity extends AppCompatActivity implements Inje
 
     ActivityWidgetBinding binding;
 
-    ArrayAdapter<String> spinnerAdapter;
-    List<String> recipes;
+    ArrayAdapter<String> mSpinnerAdapter;
+    ArrayAdapter<String> mRecipeIngredientsAdapter;
+    List<String> mRecipesNames;
+    List<String> mRecipeIngredients;
 
     SharedPreferences prefs;
 
@@ -59,17 +65,8 @@ public class IngredientsWidgetActivity extends AppCompatActivity implements Inje
         setResult(RESULT_CANCELED);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Set layout size of activity
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        recipes = new ArrayList<>();
-        spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, recipes);
-        binding.widgetSpinnerRecipes.setAdapter(spinnerAdapter);
-        binding.widgetSpinnerRecipes.setOnItemSelectedListener(this);
-        binding.addRecipeWidget.setOnClickListener(this);
-
-        widgetViewModel = ViewModelProviders.of(this, viewModelFactory).get(WidgetViewModel.class);
+        setupUi();
 
         // Find the widget id from the intent.
         Intent intent = getIntent();
@@ -78,29 +75,64 @@ public class IngredientsWidgetActivity extends AppCompatActivity implements Inje
             mAppWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
-
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
             return;
         }
 
-        int recipeId = loadRecipeId(this, mAppWidgetId);
-        widgetViewModel.getRecipes().observe(this, newRecipes -> {
-            if (newRecipes != null) {
-                recipes.clear();
-                int selectedRecipe = 0;
-                for (int i = 0; i < recipes.size(); i++) {
-                    if (newRecipes.get(i).getId() == recipeId)
-                        selectedRecipe = i;
-                    recipes.add(recipes.get(i));
-                }
+        widgetViewModel = ViewModelProviders.of(this, viewModelFactory).get(WidgetViewModel.class);
+        observeViewModel();
+    }
 
-                spinnerAdapter.notifyDataSetChanged();
-                binding.widgetSpinnerRecipes.setSelection(selectedRecipe);
-                binding.widgetIngredients.setText(selectedRecipe);
+    private void setupUi() {
+        Spinner RecipesSpinner = binding.widgetSpinnerRecipes;
+
+        mRecipesNames = new ArrayList<>();
+        mRecipeIngredients = new ArrayList<>();
+        mSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mRecipesNames);
+        mRecipeIngredientsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mRecipeIngredients);
+
+        RecipesSpinner.setAdapter(mSpinnerAdapter);
+        RecipesSpinner.setOnItemSelectedListener(this);
+        binding.addRecipeWidget.setOnClickListener(this);
+        binding.activityWidgetIngredientsList.setAdapter(mRecipeIngredientsAdapter);
+    }
+
+    private void observeViewModel() {
+        widgetViewModel.getRecipes().observe(this, newRecipes -> {
+            if (newRecipes != null && !newRecipes.isEmpty()) {
+                int recipeId = 1;
+                if (loadRecipeId(this, mAppWidgetId) != -1)
+                    recipeId = loadRecipeId(this, mAppWidgetId);
+
+                mRecipesNames.clear();
+                mRecipeIngredients.clear();
+
+                for (int i = 0; i < newRecipes.size(); i++) {
+                    Recipe recipe = newRecipes.get(i);
+                    mRecipesNames.add(recipe.getName());
+                }
+                updateRecipeIngredientsList(newRecipes.get(recipeId));
+                mSpinnerAdapter.notifyDataSetChanged();
             }
         });
+
+        widgetViewModel.getSelectedRecipe().observe(this, newSelectedRecipe -> {
+            if (newSelectedRecipe != null) {
+                updateRecipeIngredientsList(newSelectedRecipe);
+            }
+        });
+    }
+
+    private void updateRecipeIngredientsList(Recipe recipe) {
+        if (recipe != null) {
+            mRecipeIngredients.clear();
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                mRecipeIngredients.add(ingredient.getIngredient());
+            }
+            mRecipeIngredientsAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -114,7 +146,7 @@ public class IngredientsWidgetActivity extends AppCompatActivity implements Inje
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Recipe recipe = widgetViewModel.getRecipeByPosition(binding.widgetSpinnerRecipes.getSelectedItemPosition());
-        binding.widgetIngredients.setText(recipe.getIngredients().get(i).getIngredient());
+        widgetViewModel.setSelectedRecipe(recipe);
     }
 
     @Override
@@ -149,7 +181,7 @@ public class IngredientsWidgetActivity extends AppCompatActivity implements Inje
     // If there is no preference saved, get the default from a resource
     public static int loadRecipeId(Context context, int appWidgetId) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getInt(PREF_WIDGET_PREFIX + appWidgetId, 0);
+        return sharedPreferences.getInt(PREF_WIDGET_PREFIX + appWidgetId, -1);
     }
 
     public static void deleteRecipeIdPref(Context context, int appWidgetId) {

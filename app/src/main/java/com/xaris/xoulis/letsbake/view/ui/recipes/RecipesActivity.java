@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.xaris.xoulis.letsbake.R;
+import com.xaris.xoulis.letsbake.widget.WidgetConstants;
 
 import javax.inject.Inject;
 
@@ -37,10 +38,15 @@ public class RecipesActivity extends AppCompatActivity implements HasSupportFrag
         }
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null)
+        Bundle args = getIntent().getExtras();
+        if (savedInstanceState == null) {
+            RecipesFragment fragment = new RecipesFragment();
+            if (args != null && args.containsKey(WidgetConstants.RECIPE_ID_EXTRA))
+                fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new RecipesFragment())
+                    .add(R.id.container, fragment)
                     .commit();
+        }
     }
 
     @Override

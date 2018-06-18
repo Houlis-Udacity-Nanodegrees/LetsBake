@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.xaris.xoulis.letsbake.di.Injectable;
 import com.xaris.xoulis.letsbake.view.adapter.RecipesAdapter;
 import com.xaris.xoulis.letsbake.view.ui.detail.DetailFragment;
 import com.xaris.xoulis.letsbake.view.ui.steps.StepsFragment;
+import com.xaris.xoulis.letsbake.widget.WidgetConstants;
 
 import javax.inject.Inject;
 
@@ -58,11 +60,21 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        recipesViewModel = ViewModelProviders.of(this, mViewModelFactory).get(RecipesViewModel.class);
+
         initRecyclerView();
         if (savedInstanceState != null) {
             recyclerViewPosition = savedInstanceState.getParcelable(RECYCLERVIEW_STATE_KEY);
         }
-        observeViewModel();
+
+        Bundle args = getArguments();
+        boolean displayDetailsFragment = false;
+        if (args != null && args.containsKey(WidgetConstants.RECIPE_ID_EXTRA)) {
+            displayDetailsFragment = true;
+            args.remove(WidgetConstants.RECIPE_ID_EXTRA);
+        }
+
+        observeViewModel(displayDetailsFragment);
     }
 
     private void initRecyclerView() {
@@ -80,17 +92,27 @@ public class RecipesFragment extends Fragment implements Injectable, RecipesAdap
         binding.recipesRecyclerView.setLayoutManager(layoutManager);
     }
 
-    private void observeViewModel() {
-        recipesViewModel = ViewModelProviders.of(this, mViewModelFactory).get(RecipesViewModel.class);
+    private void observeViewModel(boolean showDetailsFragment) {
         recipesViewModel.getRecipes().observe(this, recipes -> {
             if (recipes != null && !recipes.isEmpty()) {
-                binding.setShowError(false);
-                recipesAdapter.setRecipes(recipes);
-                binding.recipesRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPosition);
+                if (showDetailsFragment) {
+                    Recipe recipe = recipes.get(getArguments().getInt(WidgetConstants.RECIPE_ID_EXTRA));
+                    showDetailsFragment(recipe);
+                } else {
+                    binding.setShowError(false);
+                    binding.setLoading(false);
+                    recipesAdapter.setRecipes(recipes);
+                    binding.recipesRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPosition);
+                }
             } else {
-                binding.setShowError(true);
+                // Display error after a while
+                new Handler().postDelayed(() -> {
+                    if (recipesAdapter.getItemCount() == 0) {
+                        binding.setLoading(false);
+                        binding.setShowError(true);
+                    }
+                }, 1000);
             }
-            binding.setLoading(false);
         });
     }
 

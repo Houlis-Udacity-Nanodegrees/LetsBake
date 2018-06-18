@@ -6,6 +6,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -45,19 +47,27 @@ public class RecipeWidgetService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         if (intent != null && ACTION_UPDATE_WIDGET.equals(intent.getAction())) {
-            int recipeId = intent.getIntExtra(RECIPE_ID_EXTRA, 0);
+            int recipeId = intent.getIntExtra(RECIPE_ID_EXTRA, -1);
             int appWidgetId = intent.getIntExtra(APP_WIDGET_ID_EXTRA, AppWidgetManager.INVALID_APPWIDGET_ID);
 
             if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID)
                 return;
 
-            Recipe recipe = recipesRepository.getRecipe(recipeId).getValue();
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
-            //Trigger data update to handle the GridView widgets and force a data refresh
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_ingredients_list);
-            //Now update all widgets
-            RecipeWidgetProvider.updateRecipeWidgets(this, appWidgetManager, recipe, appWidgetIds);
+            LiveData<Recipe> recipeLiveData = recipesRepository.getRecipe(recipeId);
+            recipeLiveData.observeForever(new Observer<Recipe>() {
+                @Override
+                public void onChanged(@Nullable Recipe recipe) {
+                    if (recipe != null) {
+                        recipeLiveData.removeObserver(this);
+                        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(RecipeWidgetService.this);
+                        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(RecipeWidgetService.this, RecipeWidgetProvider.class));
+                        //Trigger data update to handle the GridView widgets and force a data refresh
+                        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_ingredients_list);
+                        //Now update all widgets
+                        RecipeWidgetProvider.updateRecipeWidgets(RecipeWidgetService.this, appWidgetManager, recipe, appWidgetIds);
+                    }
+                }
+            });
         }
     }
 
@@ -87,7 +97,7 @@ public class RecipeWidgetService extends IntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "notif_channel_name";
             String description = "";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_NONE;
             NotificationChannel channel = new NotificationChannel("1", name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
