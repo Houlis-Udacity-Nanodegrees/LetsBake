@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Let\'s Bake</string>
+    <string name="ingredients_label">Ingredients</string>
+    <string name="widget_select_recipe_label">Select recipe</string>
+    <string name="widget_add_widget_label">Add Widget</string>
+    <string name="widget_error_label">Error</string>
+    <string name="widget_retry_label">Retry</string>
+    <string name="something_went_wrong_please_try_again_later">error_loading_recipes_label</string>
+    <string name="previous_recipe_label">previous</string>
+    <string name="next_recipe_label">next</string>
 </resources>

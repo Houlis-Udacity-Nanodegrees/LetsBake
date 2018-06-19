@@ -1,18 +1,12 @@
 package com.xaris.xoulis.letsbake.view.ui.detail;
 
-import android.arch.core.util.Function;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 
 import com.xaris.xoulis.letsbake.data.model.Ingredient;
 import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.data.model.Step;
-import com.xaris.xoulis.letsbake.data.repository.RecipesRepository;
 
 import java.util.List;
 

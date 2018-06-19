@@ -28,7 +28,6 @@ import com.xaris.xoulis.letsbake.data.api.ApiResponse;
 
 import com.xaris.xoulis.letsbake.utils.AppExecutors;
 
-import java.util.List;
 import java.util.Objects;
 
 /**

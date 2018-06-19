@@ -2,13 +2,10 @@ package com.xaris.xoulis.letsbake.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.xaris.xoulis.letsbake.data.model.Step;
-import com.xaris.xoulis.letsbake.databinding.RecipeItemBinding;
 import com.xaris.xoulis.letsbake.databinding.StepItemBinding;
 
 import java.util.List;

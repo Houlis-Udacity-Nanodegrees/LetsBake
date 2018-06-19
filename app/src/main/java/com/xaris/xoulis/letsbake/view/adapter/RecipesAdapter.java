@@ -1,10 +1,7 @@
 package com.xaris.xoulis.letsbake.view.adapter;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
-import android.support.v4.util.ObjectsCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,7 +9,6 @@ import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.databinding.RecipeItemBinding;
 
 import java.util.List;
-import java.util.Objects;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesAdapterViewHolder> {
 

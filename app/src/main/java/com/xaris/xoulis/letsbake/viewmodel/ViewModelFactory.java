@@ -18,7 +18,6 @@ package com.xaris.xoulis.letsbake.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
 
 import java.util.Map;
 

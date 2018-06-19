@@ -92,7 +92,7 @@
                             android:layout_centerVertical="true"
                             android:duplicateParentState="true"
                             android:gravity="center"
-                            android:text="Ingredients"
+                            android:text="@string/ingredients_label"
                             android:textAllCaps="true"
                             android:textSize="18sp"
                             android:textStyle="bold" />

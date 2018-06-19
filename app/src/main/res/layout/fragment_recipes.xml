@@ -30,6 +30,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
+            android:id="@+id/recipes_progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="@{loading == true ? View.VISIBLE : View.GONE}"
@@ -40,9 +41,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/error_loading_recipes_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Error"
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/something_went_wrong_please_try_again_later"
             android:visibility="@{showError == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

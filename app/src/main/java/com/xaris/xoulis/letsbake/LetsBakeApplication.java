@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 
-import com.facebook.stetho.Stetho;
 import com.xaris.xoulis.letsbake.di.AppInjector;
 
 import javax.inject.Inject;
@@ -27,8 +26,6 @@ public class LetsBakeApplication extends Application implements HasActivityInjec
         super.onCreate();
 
         AppInjector.init(this);
-
-        Stetho.initializeWithDefaults(this);
     }
 
     @Override

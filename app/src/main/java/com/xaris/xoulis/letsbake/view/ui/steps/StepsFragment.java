@@ -1,28 +1,18 @@
 package com.xaris.xoulis.letsbake.view.ui.steps;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -39,7 +29,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.xaris.xoulis.letsbake.R;
 import com.xaris.xoulis.letsbake.data.model.Recipe;
-import com.xaris.xoulis.letsbake.data.model.Step;
 import com.xaris.xoulis.letsbake.databinding.FragmentStepsBinding;
 
 import com.xaris.xoulis.letsbake.di.Injectable;

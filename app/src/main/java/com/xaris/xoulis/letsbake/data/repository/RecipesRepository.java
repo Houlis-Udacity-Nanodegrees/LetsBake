@@ -1,8 +1,6 @@
 package com.xaris.xoulis.letsbake.data.repository;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -16,15 +14,11 @@ import com.xaris.xoulis.letsbake.data.model.Recipe;
 import com.xaris.xoulis.letsbake.data.model.Step;
 import com.xaris.xoulis.letsbake.utils.AppExecutors;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import retrofit2.Response;
 
 @Singleton
 public class RecipesRepository {

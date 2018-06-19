@@ -15,10 +15,10 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:focusable="true"
-        android:clickable="true"
+        android:layout_height="match_parent"
         android:background="#fff"
-        android:layout_height="match_parent">
+        android:clickable="true"
+        android:focusable="true">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/player_view"
@@ -102,7 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="PREVIOUS"
+                android:text="@string/previous_recipe_label"
+                android:textAllCaps="true"
                 android:visibility="@{viewModel.hasPreviousStep != null &amp;&amp; viewModel.hasPreviousStep == true ? View.VISIBLE : View.GONE}" />
 
             <Button
@@ -110,7 +111,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="NEXT"
+                android:text="@string/next_recipe_label"
+                android:textAllCaps="true"
                 android:visibility="@{viewModel.hasNextStep == true ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>

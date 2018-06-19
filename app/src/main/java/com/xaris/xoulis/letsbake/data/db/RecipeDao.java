@@ -6,9 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.xaris.xoulis.letsbake.data.model.Ingredient;
 import com.xaris.xoulis.letsbake.data.model.Recipe;
-import com.xaris.xoulis.letsbake.data.model.Step;
 
 import java.util.List;
 
