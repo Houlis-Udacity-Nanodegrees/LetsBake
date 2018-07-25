@@ -22,3 +22,6 @@ You will productionize an app, taking it from a functional state to a production
 * Picasso
 * ExoPlayer
 * Espresso and Mockito
+
+## Screenshots
+![](Screenshots/sc1.png) ![](Screenshots/sc2.png) ![](Screenshots/sc3.png)
